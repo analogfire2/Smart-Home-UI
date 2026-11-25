@@ -15,7 +15,7 @@ Hubitat is the first integration; others plug in through a provider interface.
 2. On the Pi (Node 18+; `curl -fsSL https://deb.nodesource.com/setup_20.x | sudo bash - && sudo apt install -y nodejs`):
    ```bash
    git clone <this repo> smart-home-ui && cd smart-home-ui
-   cp config.example.json config.json   # edit host, appId, accessToken
+   cp config.example.json config.json   # edit url (or host), appId, accessToken
    npm start
    ```
 3. Open `http://<pi-ip>:8080` on your phone (Add to Home Screen for an app-like launch).
@@ -23,6 +23,8 @@ Hubitat is the first integration; others plug in through a provider interface.
    `sudo cp deploy/smart-home-ui.service /etc/systemd/system/ && sudo systemctl enable --now smart-home-ui`.
 
 Optional instant updates: in Maker API set *URL to POST device events to* = `http://<pi-ip>:8080/api/webhook/hubitat`. Without it the server polls every 5 s.
+
+`url` is the hub origin, e.g. `https://hubitat.example.net`. For a plain LAN hub use `"host": "192.168.1.50"` instead (http).
 
 Try the UI without a hub: set `"providers":[{"type":"mock"}]`.
 

@@ -13,6 +13,13 @@ test('hubitat normalizes devices', () => {
   assert.equal(p._normalize({ id: '6', capabilities: ['Sensor'] }), null);
 });
 
+test('hubitat builds base url from url or host', () => {
+  const a = new HubitatProvider({ url: 'https://h.example.net/', appId: '9', accessToken: 't' });
+  assert.equal(a.base, 'https://h.example.net/apps/api/9');
+  const b = new HubitatProvider({ host: '10.0.0.2', appId: '9', accessToken: 't' });
+  assert.equal(b.base, 'http://10.0.0.2/apps/api/9');
+});
+
 test('server serves and toggles mock devices', async () => {
   const cfg = path.join(os.tmpdir(), `shui-${process.pid}.json`);
   fs.writeFileSync(cfg, JSON.stringify({ port: 18080, providers: [{ type: 'mock' }] }));

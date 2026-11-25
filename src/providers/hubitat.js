@@ -13,9 +13,13 @@ const { Provider } = require('./base');
 class HubitatProvider extends Provider {
   constructor(cfg) {
     super(cfg);
-    for (const k of ['host', 'appId', 'accessToken'])
+    for (const k of ['appId', 'accessToken'])
       if (!cfg[k]) throw new Error(`hubitat provider: missing "${k}"`);
-    this.base = `http://${cfg.host}/apps/api/${cfg.appId}`;
+    // "url" = full origin e.g. https://hubitat.example.net ; "host" = LAN IP/name (plain http)
+    const origin = cfg.url || (cfg.host && `http://${cfg.host}`);
+    if (!origin) throw new Error('hubitat provider: set "url" or "host"');
+    this.origin = origin.replace(/\/+$/, '');
+    this.base = `${this.origin}/apps/api/${cfg.appId}`;
     this.roomByDevice = new Map();
     this.cache = new Map(); // nativeId -> device
   }
@@ -30,7 +34,7 @@ class HubitatProvider extends Provider {
 
   async _loadRooms() {
     try {
-      const res = await fetch(`http://${this.cfg.host}/hub2/roomsList`, { signal: AbortSignal.timeout(5000) });
+      const res = await fetch(`${this.origin}/hub2/roomsList`, { signal: AbortSignal.timeout(5000) });
       if (!res.ok) return;
       const rooms = await res.json();
       this.roomByDevice.clear();

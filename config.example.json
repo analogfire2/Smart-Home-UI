@@ -5,7 +5,7 @@
     {
       "type": "hubitat",
       "id": "hubitat",
-      "host": "192.168.1.50",
+      "url": "https://hubitat.example.net",
       "appId": "123",
       "accessToken": "YOUR-MAKER-API-TOKEN"
     }
