@@ -13,7 +13,9 @@ h2 button{background:none;border:0;color:var(--dim);font:inherit;text-transform:
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:6px}
 .tile{background:var(--card);border:1px solid #2a313a;border-radius:10px;padding:6px 2px 5px;text-align:center;color:var(--dim);cursor:pointer;user-select:none;min-height:62px}
 .tile svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.tile span{display:block;margin-top:3px;font-size:10px;line-height:1.1;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;padding:0 2px}
+.tile span{display:block;margin-top:3px;font-size:10px;line-height:1.1;overflow-wrap:anywhere;padding:0 2px}
+.tile.sm span{font-size:8.5px}
+.tile.xs span{font-size:7.5px}
 .tile.on{color:var(--on);border-color:#6b5316;background:#2a2412}
 .tile.on svg{fill:rgba(255,200,61,.25);filter:drop-shadow(0 0 4px rgba(255,200,61,.6))}
 .tile.off-line{opacity:.4;border-style:dashed}

@@ -8,11 +8,12 @@ const ICONS = {
 const $ = s => document.querySelector(s);
 const devices = new Map();
 const store = (k, v) => { try { return v === undefined ? localStorage.getItem(k) : localStorage.setItem(k, v); } catch { } };
+const pinned = new Set(); // tiles toggled while filtered stay visible until the filter is clicked again
 const state = { filter: store('filter') || 'all', sort: store('sort') || 'name', group: store('group') || 'room', q: '' };
 
 for (const k of ['sort', 'group']) { $('#' + k).value = state[k]; $('#' + k).onchange = e => { state[k] = e.target.value; store(k, state[k]); render(); }; }
 $('#q').oninput = e => { state.q = e.target.value.toLowerCase(); render(); };
-document.querySelectorAll('#filter button').forEach(b => b.onclick = () => { state.filter = b.dataset.v; store('filter', state.filter); render(); });
+document.querySelectorAll('#filter button').forEach(b => b.onclick = () => { pinned.clear(); state.filter = b.dataset.v; store('filter', state.filter); render(); });
 
 function cmp(a, b) {
   const byName = a.name.localeCompare(b.name, undefined, { numeric: true });
@@ -20,13 +21,14 @@ function cmp(a, b) {
   if (state.sort === 'off') return (a.on - b.on) || byName;
   return byName;
 }
-const tile = d => `<div class="tile ${d.on ? 'on' : ''} ${d.online ? '' : 'off-line'}" data-id="${d.id}" title="${d.name}">
+const sizeCls = n => n.length > 26 ? 'xs' : n.length > 14 ? 'sm' : '';
+const tile = d => `<div class="tile ${d.on ? 'on' : ''} ${d.online ? '' : 'off-line'} ${sizeCls(d.name)}" data-id="${d.id}" title="${d.name}">
   <svg viewBox="0 0 24 24">${ICONS[d.type] || ICONS.other}</svg><span>${d.name.replace(/</g, '&lt;')}</span></div>`;
 
 function render() {
   document.querySelectorAll('#filter button').forEach(b => b.classList.toggle('act', b.dataset.v === state.filter));
   let list = [...devices.values()].filter(d =>
-    (state.filter === 'all' || (state.filter === 'on') === d.on) && (!state.q || (d.name + (d.room || '')).toLowerCase().includes(state.q)));
+    (state.filter === 'all' || (state.filter === 'on') === d.on || pinned.has(d.id)) && (!state.q || (d.name + (d.room || '')).toLowerCase().includes(state.q)));
   $('#count').textContent = `${list.filter(d => d.on).length}/${list.length} on`;
   list.sort(cmp);
   let html = '';
@@ -42,6 +44,7 @@ function render() {
 }
 
 async function power(d, on) {
+  if (state.filter !== 'all') pinned.add(d.id);
   d.on = on; render();   // optimistic
   try {
     const r = await fetch(`/api/devices/${encodeURIComponent(d.id)}/power`, { method: 'POST', body: JSON.stringify({ on }) });
