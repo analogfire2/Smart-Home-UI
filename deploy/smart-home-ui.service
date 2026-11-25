@@ -1,0 +1,12 @@
+[Unit]
+Description=Smart Home UI
+After=network-online.target
+
+[Service]
+WorkingDirectory=/home/pi/smart-home-ui
+ExecStart=/usr/bin/node src/server.js
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target

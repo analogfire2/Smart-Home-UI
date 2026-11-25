@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111418">
+<title>Smart Home</title>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<header>
+  <div class="seg" id="filter">
+    <button data-v="all" class="act">All</button><button data-v="on">On</button><button data-v="off">Off</button>
+  </div>
+  <select id="sort" aria-label="Sort">
+    <option value="name">A–Z</option><option value="on">On first</option><option value="off">Off first</option>
+  </select>
+  <select id="group" aria-label="Group">
+    <option value="none">No groups</option><option value="room">By room</option>
+  </select>
+  <input id="q" type="search" placeholder="Search" aria-label="Search">
+  <span id="count"></span>
+</header>
+<main id="main"></main>
+<div id="toast" hidden></div>
+<script src="app.js"></script>
+</body></html>
